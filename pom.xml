@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.studentapi</groupId>
-    <artifactId>student-api</artifactId>
+    <artifactId>spring-feature-practice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>student-api</name>
-    <description>student-api</description>
+    <name>spring-feature-practice</name>
+    <description>spring-feature-practice</description>
     <url/>
     <licenses>
         <license/>

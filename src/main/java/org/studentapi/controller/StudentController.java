@@ -1,16 +1,20 @@
 package org.studentapi.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.BaseStream;
 import java.util.stream.Stream;
 
 @RestController
@@ -52,5 +56,18 @@ public class StudentController {
         });
 
         return emitter;
+    }
+
+    @GetMapping(value = "/stream-flux", produces = MediaType.APPLICATION_NDJSON_VALUE)
+    public Flux<String> streamFile() {
+        Path path = Paths.get("testdata.txt");
+
+        return Flux.using(
+                        () -> Files.lines(path),             // Open the file stream
+                        lineStream -> Flux.fromStream(lineStream), // Convert to Flux
+                        BaseStream::close                    // Close file when stream ends/fails
+                )
+                .checkpoint("File Streaming")
+                .log(); // See the signals (onNext, onComplete) in your console
     }
 }

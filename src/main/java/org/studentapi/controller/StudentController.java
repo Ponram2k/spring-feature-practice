@@ -2,10 +2,7 @@ package org.studentapi.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import reactor.core.publisher.Flux;
 
@@ -13,6 +10,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.BaseStream;
 import java.util.stream.Stream;
@@ -22,8 +21,12 @@ import java.util.stream.Stream;
 public class StudentController {
 
     @PostMapping
-    public ResponseEntity<String> saveStudent(){
+    public ResponseEntity<String> saveStudent(@RequestHeader Map<String, String> headerMap){
         System.out.println("Hello");
+        for (var headerEntity : headerMap.entrySet()){
+            System.out.println(headerEntity.getKey()+"="+headerEntity.getValue());
+        }
+
         return ResponseEntity.ok("Success");
     }
 

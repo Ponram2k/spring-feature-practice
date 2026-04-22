@@ -11,32 +11,49 @@ import java.util.List;
 @RequestMapping("/newrelic")
 public class NewRelicController {
 
-    // Normal API
+    // ✅ Success
     @GetMapping("/ok")
     public String ok() {
         return "Working fine";
     }
 
-    // SEV2 - Latency simulation
+    // ✅ Latency
     @GetMapping("/slow")
     public String slow() throws InterruptedException {
-        Thread.sleep(5000); // 5 sec delay
+        Thread.sleep(5000);
         return "Slow response";
     }
 
-    // SEV1 - Crash simulation
-    @GetMapping("/crash")
-    public String crash() {
+    // ✅ Failure
+    @GetMapping("/fail")
+    public String fail() {
         throw new RuntimeException("Simulated failure");
     }
 
-    // SEV3 - Background delay simulation
-    @GetMapping("/memory")
-    public String memory() {
-        List<byte[]> leak = new ArrayList<>();
-        for (int i = 0; i < 1000; i++) {
-            leak.add(new byte[1024 * 1024]); // consume memory
+    // ✅ CPU Load (HPA)
+    @GetMapping("/cpu-load")
+    public String cpuLoad() {
+        long end = System.currentTimeMillis() + 60000;
+        while (System.currentTimeMillis() < end) {
+            Math.sqrt(Math.random());
         }
-        return "Memory spike triggered";
+        return "CPU load generated";
+    }
+
+    // ✅ Crash (Restart)
+    @GetMapping("/crash")
+    public String crash() {
+        System.exit(1);
+        return "This will never execute";
+    }
+
+    // ✅ OOM Test
+    private static final List<byte[]> leak = new ArrayList<>();
+
+    @GetMapping("/memory-leak")
+    public String memoryLeak() {
+        while (true) {
+            leak.add(new byte[1024 * 1024]);
+        }
     }
 }
